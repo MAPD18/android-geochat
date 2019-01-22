@@ -11,16 +11,21 @@ import android.util.Log;
 
 import com.zv.geochat.notification.NotificationDecorator;
 
+import static com.zv.geochat.Constants.TAG_BASE;
+
 public class ChatService extends Service {
-    private static final String TAG = "ChatService";
+    private static final String TAG = TAG_BASE + ":ChatService";
 
     public static final String MSG_CMD = "msg_cmd";
     public static final int CMD_JOIN_CHAT = 10;
     public static final int CMD_LEAVE_CHAT = 20;
     public static final int CMD_SEND_MESSAGE = 30;
     public static final int CMD_RECEIVE_MESSAGE = 40;
+    public static final int CMD_CONNECTION_ERROR = 50;
+    public static final int CMD_SEND_ID = 60;
     public static final String KEY_MESSAGE_TEXT = "message_text";
     public static final String KEY_USER_NAME = "user_name";
+    public static final String KEY_GENERATED_ID = "generated_id";
 
     private NotificationManager notificationMgr;
     private PowerManager.WakeLock wakeLock;
@@ -83,21 +88,43 @@ public class ChatService extends Service {
     private void handleData(Bundle data) {
         int command = data.getInt(MSG_CMD);
         Log.d(TAG, "-(<- received command data to service: command=" + command);
-        if (command == CMD_JOIN_CHAT) {
-            String userName = (String) data.get(KEY_USER_NAME);
-            notificationDecorator.displaySimpleNotification("Joining Chat...", "Connecting as User: " + userName);
-        } else if (command == CMD_LEAVE_CHAT) {
-            notificationDecorator.displaySimpleNotification("Leaving Chat...", "Disconnecting");
-            stopSelf();
-        } else if (command == CMD_SEND_MESSAGE) {
-            String messageText = (String) data.get(KEY_MESSAGE_TEXT);
-            notificationDecorator.displaySimpleNotification("Sending message...", messageText);
-        } else if (command == CMD_RECEIVE_MESSAGE) {
-            String testUser = "User2";
-            String testMessage = "Simulated Message";
-            notificationDecorator.displaySimpleNotification("New message...: "+ testUser, testMessage);
-        } else {
-            Log.w(TAG, "Ignoring Unknown Command! id=" + command);
+        switch (command) {
+            case CMD_JOIN_CHAT: {
+                String userName = (String) data.get(KEY_USER_NAME);
+                notificationDecorator.displaySimpleNotification("Joining Chat...", "Connecting as User: " + userName);
+                break;
+            }
+            case CMD_LEAVE_CHAT: {
+                notificationDecorator.displaySimpleNotification("Leaving Chat...", "Disconnecting");
+                stopSelf();
+                break;
+            }
+            case CMD_SEND_MESSAGE: {
+                String messageText = (String) data.get(KEY_MESSAGE_TEXT);
+                notificationDecorator.displaySimpleNotification("Sending message...", messageText);
+                break;
+            }
+            case CMD_RECEIVE_MESSAGE: {
+                String testUser = "User2";
+                String testMessage = "Simulated Message";
+                notificationDecorator.displaySimpleNotification("New message...: "+ testUser, testMessage);
+                break;
+            }
+            case CMD_CONNECTION_ERROR: {
+                notificationDecorator.displaySimpleNotification("Connection Error: 48");
+                break;
+            }
+            case CMD_SEND_ID: {
+                String generatedId = (String) data.get(KEY_GENERATED_ID);
+                notificationDecorator.displaySimpleNotification("Received Data: " + generatedId);
+                break;
+            }
+            default: {
+                Log.w(TAG, "Ignoring Unknown Command! id=" + command);
+                break;
+            }
+
         }
     }
+
 }

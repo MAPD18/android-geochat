@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadUserNameFromPreferences() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String userName = prefs.getString(Constants.KEY_USER_NAME, "User Name");
+        String userName = prefs.getString(Constants.KEY_USER_NAME, "");
 
         EditText edtUserName = (EditText) findViewById(R.id.edtUserName);
         edtUserName.setText(userName);

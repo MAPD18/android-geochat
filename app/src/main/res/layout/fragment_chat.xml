@@ -50,5 +50,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btnReceiveMessage" />
+
+        <Button
+            android:id="@+id/btnConnectionError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connection Error" />
+
+        <Button
+            android:id="@+id/btnSendId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send ID" />
     </LinearLayout>
 </RelativeLayout>
