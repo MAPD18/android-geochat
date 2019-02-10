@@ -10,7 +10,10 @@ import android.widget.TextView;
 import com.zv.geochat.R;
 import com.zv.geochat.model.ChatMessage;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import co.dift.ui.SwipeToAction;
 
@@ -25,6 +28,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public TextView userName;
         public TextView chatMessageBody;
         public ImageView imageView;
+        public TextView date;
 
         public ChatMessageViewHolder(View v) {
             super(v);
@@ -32,6 +36,7 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             userName = (TextView) v.findViewById(R.id.userName);
             chatMessageBody = (TextView) v.findViewById(R.id.body);
             imageView = (ImageView) v.findViewById(R.id.image);
+            date = (TextView) v.findViewById(R.id.date);
         }
     }
 
@@ -65,5 +70,9 @@ public class ChatMessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         vh.userName.setText(item.getUserName());
         vh.chatMessageBody.setText(item.getBody());
         vh.data = item;
+        Date date = new Date();
+        date.setTime(item.getTimestamp());
+        String formattedDate = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.CANADA).format(date);
+        vh.date.setText(formattedDate);
     }
 }
