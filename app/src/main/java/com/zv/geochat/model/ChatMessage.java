@@ -13,9 +13,6 @@ public class ChatMessage {
     }
 
     public ChatMessage(String userName, String body) {
-        this.userName = userName;
-        this.body = body;
-        this.timestamp = new Date().getTime();
         this(null, userName, body, false);
     }
 
@@ -28,6 +25,14 @@ public class ChatMessage {
         this.userName = userName;
         this.body = body;
         this.timestamp = new Date().getTime();
+        this.statusUpdate = statusUpdate;
+    }
+
+
+    public ChatMessage(String id, String userName, String body, boolean statusUpdate) {
+        this.id = id;
+        this.userName = userName;
+        this.body = body;
         this.statusUpdate = statusUpdate;
     }
 

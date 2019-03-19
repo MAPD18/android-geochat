@@ -12,6 +12,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.zv.geochat.ChatActivity;
+import com.zv.geochat.R;
+
 import static com.zv.geochat.Constants.CHANNEL_DESCRIPTION;
 import static com.zv.geochat.Constants.CHANNEL_ID;
 import static com.zv.geochat.Constants.CHANNEL_NAME;
@@ -49,7 +51,7 @@ public class NotificationDecorator {
             try {
 
 
-                Notification noti = new Notification.Builder(context)
+                Notification noti = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_message)
                         .setContentTitle(title)
                         .setContentText(contentText)
@@ -80,7 +82,7 @@ public class NotificationDecorator {
             try {
 
 
-                Notification noti = new Notification.Builder(context)
+                Notification noti = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_message)
                         .setContentTitle(title)
                         .setContentText(contentText)
@@ -89,7 +91,7 @@ public class NotificationDecorator {
                         .setSound(messageNotifierConfig.getSoundUri())
                         .setVibrate(messageNotifierConfig.getVibratePattern())
                         .setLights(Color.BLUE, 1000, 1000)
-                        .setStyle(new Notification.BigTextStyle().bigText(contentText))
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
                         .build();
 
                 noti.flags |= Notification.FLAG_AUTO_CANCEL;
@@ -99,3 +101,4 @@ public class NotificationDecorator {
             }
         }
     }
+}
