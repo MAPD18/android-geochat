@@ -29,4 +29,17 @@
     <string name="action_map">Map</string>
     <string name="action_leave">Leave Chat</string>
 
+    <string name="pref_session_counter">Session Messages Counter</string>
+    <string-array name="session_message_counter">
+        <item>2 messages</item>
+        <item>5 messages</item>
+        <item>15 messages</item>
+    </string-array>
+
+    <string-array name="session_message_counter_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>
