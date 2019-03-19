@@ -27,5 +27,6 @@ public class GeoChatProviderMetadata {
 		// string type
 		public static final String USER_NAME = "user_name";
 		public static final String MSG_BODY = "msg_body";
+		public static final String MSG_DATE = "msg_date";
 	}
 }
