@@ -84,6 +84,10 @@ public class ChatBubbleAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void clearSession() {
+        chatMessages.clear();
+    }
+
     public void add(ChatMessage message) {
         chatMessages.add(message);
     }

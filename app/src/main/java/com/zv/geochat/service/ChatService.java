@@ -17,7 +17,7 @@ import com.zv.geochat.notification.NotificationDecorator;
 import com.zv.geochat.provider.ChatMessageStore;
 
 public class ChatService extends Service {
-    private static final String TAG = "ChatService";
+    private static final String TAG = "GeoChat:ChatService";
 
     public static final String CMD = "msg_cmd";
     public static final int CMD_JOIN_CHAT = 10;
@@ -31,6 +31,8 @@ public class ChatService extends Service {
     private NotificationDecorator notificationDecorator;
     private ChatMessageStore chatMessageStore;
 
+    private int currentSessionMessageCount;
+    private int maxCountMessages;
     private String myName;
 
     public ChatService() {
@@ -90,23 +92,28 @@ public class ChatService extends Service {
 
 
     private void handleData(Bundle data) {
+        updateMaxCounter();
         int command = data.getInt(CMD);
         Log.d(TAG, "-(<- received command data to service: command=" + command);
         if (command == CMD_JOIN_CHAT) {
+            currentSessionMessageCount = 0;
             notificationDecorator.displaySimpleNotification("Joining Chat...", "Connecting as User: " + myName);
             sendBroadcastConnected();
             sendBroadcastUserJoined(myName, 1);
         } else if (command == CMD_LEAVE_CHAT) {
+            currentSessionMessageCount = 0;
             notificationDecorator.displaySimpleNotification("Leaving Chat...", "Disconnecting");
             sendBroadcastUserLeft(myName, 0);
             sendBroadcastNotConnected();
             stopSelf();
         } else if (command == CMD_SEND_MESSAGE) {
+            currentSessionMessageCount++;
             String messageText = (String) data.get(KEY_MESSAGE_TEXT);
             notificationDecorator.displayExpandableNotification("Sending message...", messageText);
             chatMessageStore.insert(new ChatMessage(myName, messageText));
             sendBroadcastNewMessage(myName, messageText);
         } else if (command == CMD_RECEIVE_MESSAGE) {
+            currentSessionMessageCount++;
             String testUser = "Test User";
             String testMessage = "Simulated Message";
             notificationDecorator.displayExpandableNotification("New message...: "+ testUser, testMessage);
@@ -115,11 +122,33 @@ public class ChatService extends Service {
         } else {
             Log.w(TAG, "Ignoring Unknown Command! id=" + command);
         }
+
+        if (currentSessionMessageCount > maxCountMessages) {
+            sendBroadcastReachedMessageLimit(myName, maxCountMessages);
+            notificationDecorator.displaySimpleNotification("Leaving Chat...", "Session closed after reaching the limit of: " + maxCountMessages + " messages");
+            stopSelf();
+        }
     }
 
     private void loadUserNameFromPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         myName = prefs.getString(Constants.PREF_KEY_USER_NAME, "Default Name");
+        String value = prefs.getString(Constants.PREF_KEY_SESSION_COUNTER, "30");
+        try {
+            maxCountMessages = Integer.parseInt(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateMaxCounter() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String value = prefs.getString(Constants.PREF_KEY_SESSION_COUNTER, "30");
+        try {
+            maxCountMessages = Integer.parseInt(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -172,6 +201,19 @@ public class ChatService extends Service {
 
         Bundle data = new Bundle();
         data.putString(Constants.CHAT_MESSAGE, message);
+        data.putString(Constants.CHAT_USER_NAME, userName);
+        intent.putExtras(data);
+
+        sendBroadcast(intent);
+    }
+
+    private void sendBroadcastReachedMessageLimit(String userName, int limit) {
+        Log.d(TAG, "->(+)<- sending broadcast: BROADCAST_REACHED_MESSAGE_LIMIT");
+        Intent intent = new Intent();
+        intent.setAction(Constants.BROADCAST_REACHED_MESSAGE_LIMIT);
+
+        Bundle data = new Bundle();
+        data.putString(Constants.CHAT_MESSAGE, "Session closed after reaching the limit of: " + limit + " messages");
         data.putString(Constants.CHAT_USER_NAME, userName);
         intent.putExtras(data);
 

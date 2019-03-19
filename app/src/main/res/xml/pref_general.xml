@@ -25,7 +25,7 @@
     <ListPreference
         android:key="key_session_counter"
         android:title="@string/pref_session_counter"
-        android:defaultValue="0"
+        android:defaultValue="2"
         android:entries="@array/session_message_counter"
         android:entryValues="@array/session_message_counter_values" />
 

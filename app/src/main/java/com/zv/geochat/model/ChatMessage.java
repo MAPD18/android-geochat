@@ -20,20 +20,12 @@ public class ChatMessage {
         this(null, userName,body,statusUpdate);
     }
 
-    public ChatMessage(String id, String userName, String body) {
+    private ChatMessage(String id, String userName, String body, boolean statusUpdate) {
         this.id = id;
         this.userName = userName;
         this.body = body;
+        this.statusUpdate = statusUpdate;
         this.timestamp = new Date().getTime();
-        this.statusUpdate = statusUpdate;
-    }
-
-
-    public ChatMessage(String id, String userName, String body, boolean statusUpdate) {
-        this.id = id;
-        this.userName = userName;
-        this.body = body;
-        this.statusUpdate = statusUpdate;
     }
 
 

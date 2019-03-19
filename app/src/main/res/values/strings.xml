@@ -37,9 +37,9 @@
     </string-array>
 
     <string-array name="session_message_counter_values">
-        <item>0</item>
-        <item>1</item>
         <item>2</item>
+        <item>5</item>
+        <item>15</item>
     </string-array>
 
 </resources>
