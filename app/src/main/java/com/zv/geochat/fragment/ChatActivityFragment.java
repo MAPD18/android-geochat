@@ -1,5 +1,6 @@
 package com.zv.geochat.fragment;
 
+import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +8,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +72,7 @@ public class ChatActivityFragment extends Fragment {
         Bundle data = new Bundle();
         data.putInt(ChatService.CMD, ChatService.CMD_SEND_MESSAGE);
         data.putString(ChatService.KEY_MESSAGE_TEXT, messageText);
-        Intent intent = new Intent(getContext(), ChatService.class);
+        Intent intent = new Intent(getActivity(), ChatService.class);
         intent.putExtras(data);
         getActivity().startService(intent);
     }
@@ -124,10 +124,10 @@ public class ChatActivityFragment extends Fragment {
                 ChatMessage chatMessage = new ChatMessage(userName, message);
                 displayMessage(chatMessage);
             } else if (Constants.BROADCAST_REACHED_MESSAGE_LIMIT.equals(action)) {
-                adapter.clearSession();
+                //adapter.clearSession();
                 String userName = data.getString(Constants.CHAT_USER_NAME);
                 String message = data.getString(Constants.CHAT_MESSAGE);
-                ChatMessage chatMessage = new ChatMessage(userName, message);
+                ChatMessage chatMessage = new ChatMessage(userName, message, true);
                 displayMessage(chatMessage);
             } else if (Constants.BROADCAST_USER_TYPING.equals(action)) {
                 // TODO

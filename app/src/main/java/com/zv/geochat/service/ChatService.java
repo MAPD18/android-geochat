@@ -123,7 +123,9 @@ public class ChatService extends Service {
             Log.w(TAG, "Ignoring Unknown Command! id=" + command);
         }
 
-        if (currentSessionMessageCount > maxCountMessages) {
+        if (currentSessionMessageCount == maxCountMessages) {
+            sendBroadcastUserLeft(myName, 0);
+            sendBroadcastNotConnected();
             sendBroadcastReachedMessageLimit(myName, maxCountMessages);
             notificationDecorator.displaySimpleNotification("Leaving Chat...", "Session closed after reaching the limit of: " + maxCountMessages + " messages");
             stopSelf();
