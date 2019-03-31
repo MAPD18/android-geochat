@@ -1,5 +1,7 @@
 package com.zv.geochat.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class ChatMessage {
     private String id;
     private String userName;
@@ -52,6 +54,10 @@ public class ChatMessage {
 
     public boolean isStatusUpdate() {
         return statusUpdate;
+    }
+
+    public LatLng getLocation() {
+        return new LatLng(this.body.getLat(), this.body.getLng());
     }
 
     @Override

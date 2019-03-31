@@ -21,7 +21,7 @@ import com.zv.geochat.notification.NotificationDecorator;
 import com.zv.geochat.provider.ChatMessageStore;
 
 public class ChatService extends Service {
-    private static final String TAG = "ChatService";
+    private static final String TAG = "myapp:ChatService";
 
     public static final String CMD = "cmd";
     public static final int CMD_JOIN_CHAT = 10;
@@ -118,6 +118,6 @@ public class ChatService extends Service {
     private void loadPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         myName = prefs.getString(Constants.PREF_KEY_USER_NAME, "Default Name");
-        serverUri = prefs.getString(Constants.PREF_KEY_SERVER_URI, null);
+        serverUri = Constants.SERVER_URI;
     }
 }

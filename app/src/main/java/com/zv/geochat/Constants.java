@@ -24,4 +24,6 @@ public interface Constants {
     String CHAT_USER_NAME = "CHAT_USER_NAME";
     String CHAT_MESSAGE = "CHAT_MESSAGE";
 
+    String SERVER_URI = "https://socket-io-chat-server.herokuapp.com";
+
 }

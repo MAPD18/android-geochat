@@ -187,7 +187,7 @@ public class ChatActivityFragment extends Fragment implements SharedPreferences.
 
     private void loadPreferences() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        shareLocation = prefs.getBoolean(Constants.PREF_KEY_SHARE_LOCATION, false);
+        shareLocation = prefs.getBoolean(Constants.PREF_KEY_SHARE_LOCATION, true);
     }
 
     @Override

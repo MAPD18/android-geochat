@@ -24,9 +24,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.zv.geochat.map.MapClusterItem;
 import com.zv.geochat.model.ChatMessage;
+import com.zv.geochat.model.ChatMessageBody;
 import com.zv.geochat.provider.ChatMessageStore;
 
 import java.util.List;
@@ -65,6 +68,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 .addOnConnectionFailedListener(this)
                 .build();
         chatMessageStore = new ChatMessageStore(this);
+
     }
 
     @Override
@@ -107,18 +111,57 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         clusterManager = new ClusterManager<MapClusterItem>(this, mMap);
         mMap.setOnCameraChangeListener(clusterManager);
+        mMap.setOnMarkerClickListener(clusterManager);
         //---- create markers
         List<ChatMessage> chatMessageList = chatMessageStore.getList();
         for (ChatMessage chatMessage : chatMessageList) {
             // do something with object
             if (chatMessage.getBody().hasLocation()){
-                MapClusterItem myItem = new MapClusterItem(chatMessage.getBody().getLat(),
-                        chatMessage.getBody().getLng());
+                MapClusterItem myItem = new MapClusterItem(chatMessage);
                 //Log.v(TAG,"add cluster item: " + myItem);
                 clusterManager.addItem(myItem);
             }
         }
+        clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MapClusterItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MapClusterItem> cluster) {
+                StringBuilder builder = new StringBuilder();
+
+                for (MapClusterItem clusterItem : cluster.getItems()) {
+                    builder.append(clusterItem.getmMessage().getUserName())
+                            .append(": ")
+                            .append(clusterItem.getmMessage().getBody().getText())
+                    .append("\n");
+                }
+                showMessageSummaryDialog(builder.toString());
+                return false;
+            }
+        });
+
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MapClusterItem>() {
+            @Override
+            public boolean onClusterItemClick(MapClusterItem clusterItem) {
+                String messageSummary = clusterItem.getmMessage().getUserName()
+                        .concat(": ")
+                        .concat(clusterItem.getmMessage().getBody().getText());
+                showMessageSummaryDialog(messageSummary);
+                return false;
+            }
+        });
+
         setMyLocationEnabled();
+    }
+
+    private void showMessageSummaryDialog(String messageSummary) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(messageSummary)
+                .setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.create().show();
     }
 
     private void setMyLocationEnabled() {
